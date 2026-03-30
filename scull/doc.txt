@@ -1,0 +1,36 @@
+1. Design
+First step of driver writing is define the MECHANISM will offer user programs
+"Device" is a part of computer's memory => free to to do what with: sequential or random-access, one or many, ...
+
+To "scull" useful as a template for writing real drivers for real devices => implement several device ABSTRACTION on TOP of memory.
+
+2. Major and Minor
+
+* Char devices are accessed through names in the filesystem (special files/device files/simply nodes) => allocated in the /dev directory (Identified by c is he first column of the output of ls -l )
+ - The major number Identified the driver associated with the device, ex: /dev/null; /dev/zero,.... managed by driver 1. (Multi drivers share major numbers)
+ - The minor number is used by the kernel to determine which device referred to.
+
+ 3. The internal representation of device numbers
+
+* With the kernel the dev_t type (<linux/types.h>) - 32 bits quantity with 12 bits set for major and 20 for minor.
+- in code: <linux/kdev_t.h> {
+    MAJOR(dev_t dev);
+    MINOR(dev_t dev);
+} or {
+    MKDEV(int major, int minor);
+}
+
+4. Allocating and Freeing Device numbers
+*  <linux/fs.h>: register_chrdev_region(dev_t first, unsigned int count, char * name); - return 0 if successfully
+register_chrdev_region works well if you know ahead of time exactly which device
+numbers you want. Often, however, you will not know which major numbers your
+device will use; there is a constant effort within the Linux kernel development com-
+munity to move over to the use of dynamicly-allocated device numbers
+
+* int alloc_chrdev_region(dev_t *dev, unsigned int firstminor, unsigned int count, char *name);
+* void unregister_chrdev_region(dev_t first, unsigned int count); // cleanup function.
+
+===> The above functions allocate device numbers for your driver’s use, but they do not tell the kernel anything about what you will actually do with those numbers
+Before a user-space program can access one of those device numbers, your driver needs to connect them to its internal functions that implement the device’s operations
+
+5. Dynamic Allocation of Major Numbers
