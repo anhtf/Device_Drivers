@@ -1,5 +1,7 @@
 # Self-learning Linux Kernel Driver on Beaglebone Green
 
+<img width="238" height="212" alt="image" src="https://github.com/user-attachments/assets/0fb2c78a-235d-4602-8c95-e16a268f3f0b" />
+
 ## 1. Introduction
 This repository is dedicated to my self-study journey of Linux kernel driver development, using the Beaglebone Green board and the Debian 13.3 image (`am335x-debian-13.3-base-v6.18-armhf-2026-01-22-4gb.img`).
 
